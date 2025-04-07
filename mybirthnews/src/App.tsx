@@ -64,13 +64,19 @@ const CardGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-template-areas: 
     "birthday weather"
-    "birthday weather-type"
-    "billboard billboard"
+    "weather-type billboard"
     "news news";
   gap: 16px;
   margin-bottom: 24px;
   
   @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "birthday"
+      "weather"
+      "weather-type"
+      "billboard"
+      "news";
     gap: 12px;
   }
 `;
@@ -98,9 +104,10 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
     padding: 12px;
     height: ${props => {
       if (props.type === 'weather') return '150px';
+      if (props.type === 'weather-type') return '150px';
       if (props.type === 'billboard') return '250px';
       if (props.type === 'news') return '250px';
-      if (props.type === 'birthday') return '220px';
+      if (props.type === 'birthday') return '180px';
       return '250px';
     }};
   }
@@ -178,11 +185,10 @@ const BirthdayContent = styled.div`
   justify-content: center;
   height: 100%;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.5;
-  padding-left: 20px;
+  padding-left: 12px;
 `;
-
 
 const WeatherValue = styled.div`
   font-size: 60px;
@@ -336,25 +342,6 @@ function App() {
     };
   };
 
-  const getZodiacSign = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return '♈️';
-    if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return '♉️';
-    if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return '♊️';
-    if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return '♋️';
-    if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return '♌️';
-    if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return '♍️';
-    if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return '♎️';
-    if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return '♏️';
-    if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return '♐️';
-    if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return '♑️';
-    if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return '♒️';
-    return '♓️';
-  };
-
   return (
     <AppContainer>
       <Header>
@@ -394,20 +381,6 @@ function App() {
                   {formatBirthday(selectedDate).weekday}
                 </BirthdayContent>
               )}
-
-              <CardContent 
-                type="zodiac" 
-                style={{ 
-                  fontSize: '72px', 
-                  textAlign: 'center', 
-                  justifyContent: 'center',
-                  marginTop: '0',
-                  padding: '0',
-                  background: 'none'
-                }}
-              >
-                {getZodiacSign(selectedDate)}
-              </CardContent>
             </Card>
 
             {weather && (
