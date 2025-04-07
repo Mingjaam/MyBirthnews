@@ -61,22 +61,21 @@ const DatePicker = styled.input`
 // ===== 카드 컴포넌트 =====
 const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-template-areas: 
-    "birthday weather"
+    "weather"
+    "birthday"
     "weather-type billboard"
     "news news";
-  gap: 16px;
+  gap: 12x;
   margin-bottom: 24px;
   
   @media (max-width: 640px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-areas: 
-      "birthday"
-      "weather"
-      "weather-type"
-      "billboard"
-      "news";
+      "birthday weather"
+      "weather-type billboard"
+      "news news";
     gap: 12px;
   }
 `;
