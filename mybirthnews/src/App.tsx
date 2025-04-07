@@ -307,7 +307,7 @@ function App() {
       setWeather(weatherData);
 
       // 날씨 타입 데이터 가져오기
-      const weatherTypeResponse = await axios.get(`https://mybirthnews.com/weather-type?date=${selectedDate}`);
+      const weatherTypeResponse = await axios.get(`https://mybirthnews.onrender.com/weather-type?date=${selectedDate}`);
       setWeatherType(weatherTypeResponse.data);
       
       setIsDataLoaded(true);
