@@ -5,12 +5,18 @@ import { format } from 'date-fns';
 
 // ===== 레이아웃 컴포넌트 =====
 const AppContainer = styled.div`
-  max-width: 500px;
+  width: 100%;
+  max-width: 390px;  // 기본 모바일 크기
   margin: 0 auto;
   font-family: 'GowunDodum', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: #f8f9fa;
   height: 100vh;
   overflow: auto;
+  padding: 0 16px;
+
+  @media (min-width: 400px) {
+    max-width: 600px;
+  }
 `;
 
 const Header = styled.div`
@@ -50,6 +56,22 @@ const DatePicker = styled.input`
   border-radius: 12px;
   background-color: #fff;
   color: #000;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  &::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+  }
   
   &:focus {
     outline: none;
@@ -60,76 +82,78 @@ const DatePicker = styled.input`
 
 // ===== 카드 컴포넌트 =====
 const CardGrid = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-areas: 
-    "weather"
-    "birthday"
-    "weather-type billboard"
-    "news news";
-  gap: 12x;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 24px;
-  
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: 
-      "birthday weather"
-      "weather-type billboard"
-      "news news";
-    gap: 12px;
-  }
+  width: 100%;
+`;
+
+const CardRow = styled.div`
+  display: flex;
+  gap: 16px;
+  width: 100%;
 `;
 
 const Card = styled.div<{ clickable?: boolean; type?: string }>`
   background: #fff;
   border-radius: 16px;
-  padding: 16px;
+  padding: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  // 클릭 가능 여부에 따라 마우스 커서를 설정합니다.
   cursor: ${props => props.clickable ? 'pointer' : 'default'};
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  grid-area: ${props => {
-    if (props.type === 'birthday') return 'birthday';
-    if (props.type === 'weather') return 'weather';
-    if (props.type === 'weather-type') return 'weather-type';
-    if (props.type === 'billboard') return 'billboard';
-    if (props.type === 'news') return 'news';
-    return 'auto';
+  // 카드의 flex 속성을 설정합니다. 카드의 타입에 따라 flex 값이 다릅니다.
+  flex: ${props => {
+    // 뉴스 타입의 경우 flex 값을 1 1 100%로 설정합니다.
+    if (props.type === 'news') return '1 1 100%';
+    // 날씨 타입의 경우 flex 값을 1 1 50%로 설정합니다.
+    if (props.type === 'weather-type') return '1 1 0.5 50%';
+    // 빌보드 타입의 경우 flex 값을 1 1 50%로 설정합니다.
+    if (props.type === 'billboard') return '1 1 50%';
+    // 기본적으로는 flex 값을 1 1 50%로 설정합니다.
+    return '1 1 50%';
+  }};
+  // 카드의 높이를 설정합니다. 카드의 타입에 따라 높이 값이 다릅니다.
+  height: ${props => {
+    // 날씨 타입의 경우 높이를 150px로 설정합니다.
+    if (props.type === 'weather') return '150px';
+    // 날씨 타입의 경우 높이를 150px로 설정합니다.
+    if (props.type === 'weather-type') return '150px';
+    // 빌보드 타입의 경우 높이를 250px로 설정합니다.
+    if (props.type === 'billboard') return '250px';
+    // 뉴스 타입의 경우 높이를 160px로 설정합니다.
+    if (props.type === 'news') return '160px';
+    // 생일 타입의 경우 높이를 250px로 설정합니다.
+    if (props.type === 'birthday') return '250px';
+    // 기본적으로는 높이를 250px로 설정합니다.
+    return '250px';
   }};
 
-  @media (max-width: 640px) {
-    padding: 12px;
-    height: ${props => {
-      if (props.type === 'weather') return '150px';
-      if (props.type === 'weather-type') return '150px';
-      if (props.type === 'billboard') return '250px';
-      if (props.type === 'news') return '250px';
-      if (props.type === 'birthday') return '180px';
-      return '250px';
-    }};
+  @media (min-width: 400px) {
+    padding: 16px;
   }
 `;
 
 const CardTitle = styled.h3<{ type?: string }>`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   color: #000;
-  margin-bottom: 16px;
+  margin: 0;
   text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  @media (max-width: 640px) {
-    font-size: 20px;
-    margin-bottom: 12px;
+  @media (min-width: 400px) {
+    font-size: 24px;
   }
 `;
 
 const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   font-size: ${props => {
-    const baseFontSize = props.type === 'birthday' ? 36 : 18;
+    const baseFontSize = props.type === 'birthday' ? 30 : 16;
     const itemCount = props.itemCount || 1;
-    return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 16)}px`;
+    return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 14)}px`;
   }};
   color: #000;
   margin-bottom: 4px;
@@ -149,31 +173,16 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   background-color: #f8f9fa;
-  padding: 12px;
+  padding: 8px;
   border-radius: 8px;
-  
-  &:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background-color: #e5e8eb;
-  }
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
 
-  @media (max-width: 640px) {
+  @media (min-width: 400px) {
     font-size: ${props => {
-      const mobileBaseFontSize = props.type === 'birthday' ? 30 : 16;
+      const baseFontSize = props.type === 'birthday' ? 36 : 18;
       const itemCount = props.itemCount || 1;
-      return `${Math.max(mobileBaseFontSize - (itemCount - 1) * 0.5, 14)}px`;
+      return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 16)}px`;
     }};
-    margin-bottom: 4px;
-    padding: 8px;
+    padding: 12px;
   }
 `;
 
@@ -187,15 +196,25 @@ const BirthdayContent = styled.div`
   font-size: 24px;
   line-height: 1.5;
   padding-left: 12px;
+
+  @media (min-width: 400px) {
+    font-size: 28px;
+  }
 `;
 
 const WeatherValue = styled.div`
-  font-size: 60px;
+  font-size: 36px;
   font-weight: 600;
   text-align: left;
   margin-top: 0;
   padding-top: 0;
+
+  @media (min-width: 400px) {
+    font-size: 48px;
+  }
 `;
+
+
 
 // ===== 상태 표시 컴포넌트 =====
 const LoadingSpinner = styled.div`
@@ -253,10 +272,25 @@ const SearchButton = styled.button`
 `;
 
 const BillboardTitle = styled.span`
-  font-size: 14px;
+  font-size: 8px;
   color: #666;
   margin-left: 8px;
   font-weight: normal;
+`;
+
+
+const RefreshButton = styled.button`
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;
 
 function App() {
@@ -285,7 +319,7 @@ function App() {
       const newsData = Array.isArray(newsResponse.data) ? newsResponse.data : [];
       const randomNews = newsData
         .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
+        .slice(0, 1)
         .map(item => ({
           title: item.title || '',
           link: item.link || '#'
@@ -365,59 +399,85 @@ function App() {
         
         {selectedDate && !loading && !error && isDataLoaded && (
           <CardGrid>
-            <Card type="birthday">
-              <CardTitle type="birthday">그 날은</CardTitle>
-              {selectedDate && (
-                <BirthdayContent>
-                  {formatBirthday(selectedDate).year}년<br/>
-                  {formatBirthday(selectedDate).month} {formatBirthday(selectedDate).day}일<br/>
-                  {formatBirthday(selectedDate).weekday}
-                </BirthdayContent>
-              )}
-            </Card>
+            <CardRow>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: '1 1 50%' }}>
+                <Card type="birthday">
+                  <CardTitle type="birthday">그 날은</CardTitle>
+                  {selectedDate && (
+                    <BirthdayContent>
+                      {formatBirthday(selectedDate).year}년<br/>
+                      {formatBirthday(selectedDate).month} {formatBirthday(selectedDate).day}일<br/>
+                      {formatBirthday(selectedDate).weekday}
+                    </BirthdayContent>
+                  )}
+                </Card>
+                {weatherType && (
+                  <Card type="weather-type">
+                    <CardTitle type="weather-type">그날의 날씨는</CardTitle>
+                    <WeatherValue>{weatherType.weatherType}</WeatherValue>
+                  </Card>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: '1 1 50%' }}>
+                {weather && (
+                  <Card type="weather">
+                    <CardTitle type="weather">그날의 온도는</CardTitle>
+                    <WeatherValue>{weather.temperature}°C</WeatherValue>
+                  </Card>
+                )}
+                <Card type="billboard">
+                  <CardTitle type="billboard">
+                    그날의 노래는
+                    <BillboardTitle>(빌보드)</BillboardTitle>
+                  </CardTitle>
+                  {billboardData.map((song, index) => (
+                    <CardContent 
+                      key={`billboard-${index}`}
+                      type="billboard"
+                      itemCount={billboardData.length}
+                    >
+                      {song.rank}. {song.title}
+                    </CardContent>
+                  ))}
+                </Card>
+              </div>
+            </CardRow>
 
-            {weather && (
-              <Card type="weather">
-                <CardTitle type="weather">그날의 온도는</CardTitle>
-                <WeatherValue>{weather.temperature}°C</WeatherValue>
+            <CardRow>
+              <Card type="news">
+                <CardTitle type="news">
+                  그날의 기사
+                  <RefreshButton onClick={() => {
+                    const newsResponse = axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
+                      .then(response => {
+                        const newsData = Array.isArray(response.data) ? response.data : [];
+                        const randomNews = newsData
+                          .sort(() => Math.random() - 0.5)
+                          .slice(0, 1)
+                          .map(item => ({
+                            title: item.title || '',
+                            link: item.link || '#'
+                          }));
+                        setNewsItems(randomNews);
+                      })
+                      .catch(error => {
+                        console.error('Error fetching news:', error);
+                      });
+                  }}>
+                    ↻ 다른 기사 보기
+                  </RefreshButton>
+                </CardTitle>
+                {newsItems.length > 0 && (
+                  <CardContent 
+                    key={0}
+                    type="news"
+                    itemCount={1}
+                  >
+                    {newsItems[0].title}
+                  </CardContent>
+                )}
               </Card>
-            )}
-
-            {weatherType && (
-              <Card type="weather-type">
-                <CardTitle type="weather-type">그날의 날씨는</CardTitle>
-                <WeatherValue>{weatherType.weatherType}</WeatherValue>
-              </Card>
-            )}
-
-            <Card type="billboard">
-              <CardTitle type="billboard">
-                그날의 노래는
-                <BillboardTitle>(빌보드)</BillboardTitle>
-              </CardTitle>
-              {billboardData.map((song, index) => (
-                <CardContent 
-                  key={`billboard-${index}`}
-                  type="billboard"
-                  itemCount={billboardData.length}
-                >
-                  {song.rank}. {song.title}
-                </CardContent>
-              ))}
-            </Card>
-
-            <Card type="news">
-              <CardTitle type="news">그날의 기사</CardTitle>
-              {newsItems.map((news, index) => (
-                <CardContent 
-                  key={index} 
-                  type="news"
-                  itemCount={newsItems.length}
-                >
-                  {news.title}
-                </CardContent>
-              ))}
-            </Card>
+            </CardRow>
           </CardGrid>
         )}
       </MainContent>
