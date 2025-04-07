@@ -73,12 +73,12 @@ app.get("/weather", (req, res) => {
           const wind = parseFloat(data["wind"] || 0);
           const sun = parseFloat(data["sun"] || 0);
 
-          let weatherType = "흐림";
+          let weatherType = "맑음";
           if (snow > 0) weatherType = "눈";
           else if (rain > 0) weatherType = "비";
           else if (fog >= 0.1) weatherType = "안개";
-          else if (wind >= 5.0) weatherType = "강풍";
-          else if (sun > 5) weatherType = "맑음";
+          else if (wind >= 4.0) weatherType = "강풍";
+          else if (sun < 5) weatherType = "흐림";
 
           results.push({
             temperature: data["tem"],
