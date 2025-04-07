@@ -353,7 +353,7 @@ function App() {
   return (
     <AppContainer>
       <Header>
-        <Title>당신은 기억 못하는 그때 이야기</Title>
+        <Title>당신은 기억 못 하는<br/>그 날 이야기</Title>
       </Header>
       
       <MainContent>
