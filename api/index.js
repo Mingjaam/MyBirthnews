@@ -78,7 +78,7 @@ app.get("/weather", (req, res) => {
           else if (rain > 0) weatherType = "비";
           else if (fog >= 0.1) weatherType = "안개";
           else if (wind >= 4.0) weatherType = "강풍";
-          else if (sun < 5) weatherType = "흐림";
+          else if (sun < 1.5) weatherType = "흐림";
 
           results.push({
             temperature: data["tem"],

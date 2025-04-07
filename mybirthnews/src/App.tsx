@@ -9,7 +9,7 @@ const AppContainer = styled.div`
   max-width: 390px;  // 기본 모바일 크기
   margin: 0 auto;
   font-family: 'GowunDodum', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f8f9fa;
+  background-color: #f5f0e6; // 연한 노란색/갈색 배경 (재생 종이 느낌)
   height: 100vh;
   overflow: auto;
   padding: 0 16px;
@@ -20,9 +20,8 @@ const AppContainer = styled.div`
 `;
 
 const Header = styled.div`
-  background-color: #4285f4;
-  padding: 40px 20px;
-  border-radius: 30px 30px 0 0;
+  padding: 20px 20px;
+  border-bottom: 1px solid #e5e8eb;
 `;
 
 const MainContent = styled.div`
@@ -89,7 +88,7 @@ const CardRow = styled.div`
 `;
 
 const Card = styled.div<{ clickable?: boolean; type?: string }>`
-  background: #fff;
+  background: #faf6ed; // 연한 노란색/갈색 카드 배경 (재생 종이 느낌)
   border-radius: 16px;
   padding: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -159,7 +158,7 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  background-color: #f8f9fa;
+  background-color: #f0e9d9; // 연한 노란색/갈색 배경 (재생 종이 느낌)
   padding: 8px;
   border-radius: 8px;
 
@@ -244,7 +243,7 @@ const SearchButton = styled.button`
   width: 50%;
   padding: 16px;
   font-size: 18px;
-  background-color: #4285f4;
+  background-color: #d4c4a8; // 연한 노란색/갈색 버튼 배경 (재생 종이 느낌)
   color: white;
   border: none;
   border-radius: 12px;
@@ -254,7 +253,7 @@ const SearchButton = styled.button`
   display: block;
 
   &:hover {
-    background-color: #3367d6;
+    background-color: #c0b090; // 호버 시 약간 더 진한 노란색/갈색
   }
 `;
 
@@ -301,7 +300,7 @@ function App() {
       const newsData = Array.isArray(newsResponse.data) ? newsResponse.data : [];
       const randomNews = newsData
         .sort(() => Math.random() - 0.5)
-        .slice(0, 2)
+        .slice(0, 3)
         .map(item => ({
           title: item.title || '',
           link: item.link || '#'
@@ -354,7 +353,7 @@ function App() {
   return (
     <AppContainer>
       <Header>
-        <Title>내 생일에는?</Title>
+        <Title>당신은 기억 못하는 그때 이야기</Title>
       </Header>
       
       <MainContent>
@@ -434,7 +433,7 @@ function App() {
                         const newsData = Array.isArray(response.data) ? response.data : [];
                         const randomNews = newsData
                           .sort(() => Math.random() - 0.5)
-                          .slice(0, 2)
+                          .slice(0, 3)
                           .map(item => ({
                             title: item.title || '',
                             link: item.link || '#'
