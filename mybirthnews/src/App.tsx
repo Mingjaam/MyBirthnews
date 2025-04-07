@@ -98,9 +98,9 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
   // 카드의 flex 속성을 설정합니다. 카드의 타입에 따라 flex 값이 다릅니다.
   flex: ${props => {
     // 뉴스 타입의 경우 flex 값을 1 1 100%로 설정합니다.
-    if (props.type === 'news') return '1 1 100%';
+    if (props.type === 'news') return '1 1 100%'; // 뉴스 타입의 경우 flex 값을 1 1 100%로 설정합니다.
     // 날씨 타입의 경우 flex 값을 1 1 50%로 설정합니다.
-    if (props.type === 'weather-type') return '1 1 0.5 50%';
+    if (props.type === 'weather-type') return '1 1 50%';
     // 빌보드 타입의 경우 flex 값을 1 1 50%로 설정합니다.
     if (props.type === 'billboard') return '1 1 50%';
     // 기본적으로는 flex 값을 1 1 50%로 설정합니다.
@@ -112,7 +112,7 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
     if (props.type === 'weather-type') return '150px';
     if (props.type === 'billboard') return '310px';
     if (props.type === 'news') return '200px';
-    if (props.type === 'birthday') return '250px';
+    if (props.type === 'birthday') return '200px';
     return '250px';
   }};
 
