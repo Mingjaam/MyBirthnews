@@ -9,7 +9,7 @@ const AppContainer = styled.div`
   max-width: 390px;  // 기본 모바일 크기
   margin: 0 auto;
   font-family: 'GowunDodum', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f5f0e6; // 연한 노란색/갈색 배경 (재생 종이 느낌)
+  background-color:rgb(254, 243, 215); // 연한 노란색/갈색 배경 (재생 종이 느낌)
   height: 100vh;
   overflow: auto;
   padding: 0 16px;
