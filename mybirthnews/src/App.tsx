@@ -56,21 +56,14 @@ const DatePicker = styled.input`
   border-radius: 12px;
   background-color: #fff;
   color: #000;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  }
   
-  &::-webkit-calendar-picker-indicator {
-    background: transparent;
-    bottom: 0;
-    color: transparent;
-    cursor: pointer;
-    height: auto;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: auto;
+  &::-webkit-datetime-edit {
+    padding: 0;
+  }
+  
+  &::-webkit-date-and-time-value {
+    min-height: 1.5em;
   }
   
   &:focus {
@@ -142,7 +135,7 @@ const CardTitle = styled.h3<{ type?: string }>`
   text-align: left;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
 
   @media (min-width: 400px) {
     font-size: 24px;
@@ -283,10 +276,12 @@ const RefreshButton = styled.button`
   background: none;
   border: none;
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
+  margin-left: auto;
+  white-space: nowrap;
   
   &:hover {
     background-color: #f0f0f0;
@@ -464,7 +459,7 @@ function App() {
                         console.error('Error fetching news:', error);
                       });
                   }}>
-                    ↻ 다른 기사 보기
+                    ↻ 다른 기사
                   </RefreshButton>
                 </CardTitle>
                 {newsItems.length > 0 && (
