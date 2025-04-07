@@ -109,11 +109,11 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
   // 카드의 높이를 설정합니다. 카드의 타입에 따라 높이 값이 다릅니다.
   height: ${props => {
     // 날씨 타입의 경우 높이를 150px로 설정합니다.
-    if (props.type === 'weather') return '150px';
+    if (props.type === 'weather') return '90px';
     // 날씨 타입의 경우 높이를 150px로 설정합니다.
     if (props.type === 'weather-type') return '150px';
     // 빌보드 타입의 경우 높이를 250px로 설정합니다.
-    if (props.type === 'billboard') return '250px';
+    if (props.type === 'billboard') return '310px';
     // 뉴스 타입의 경우 높이를 160px로 설정합니다.
     if (props.type === 'news') return '160px';
     // 생일 타입의 경우 높이를 250px로 설정합니다.
@@ -169,7 +169,7 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   padding: 8px;
   border-radius: 8px;
 
-  @media (min-width: 400px) {
+  @media (min-width: 600px) {
     font-size: ${props => {
       const baseFontSize = props.type === 'birthday' ? 36 : 18;
       const itemCount = props.itemCount || 1;
@@ -423,7 +423,6 @@ function App() {
                 <Card type="billboard">
                   <CardTitle type="billboard">
                     그날의 노래는
-                    <BillboardTitle>(빌보드)</BillboardTitle>
                   </CardTitle>
                   {billboardData.map((song, index) => (
                     <CardContent 
