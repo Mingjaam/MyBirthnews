@@ -26,11 +26,11 @@ const Header = styled.div`
 `;
 
 const MainContent = styled.div`
-  padding: 24px;
+  padding: 20px;
 `;
 
 const Title = styled.h1`
-  font-size: 42px;
+  font-size: 24px;
   font-weight: 700;
   color: #000;
   text-align: center;
@@ -108,17 +108,11 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
   }};
   // 카드의 높이를 설정합니다. 카드의 타입에 따라 높이 값이 다릅니다.
   height: ${props => {
-    // 날씨 타입의 경우 높이를 150px로 설정합니다.
     if (props.type === 'weather') return '90px';
-    // 날씨 타입의 경우 높이를 150px로 설정합니다.
     if (props.type === 'weather-type') return '150px';
-    // 빌보드 타입의 경우 높이를 250px로 설정합니다.
     if (props.type === 'billboard') return '310px';
-    // 뉴스 타입의 경우 높이를 160px로 설정합니다.
-    if (props.type === 'news') return '160px';
-    // 생일 타입의 경우 높이를 250px로 설정합니다.
+    if (props.type === 'news') return '200px';
     if (props.type === 'birthday') return '250px';
-    // 기본적으로는 높이를 250px로 설정합니다.
     return '250px';
   }};
 
@@ -144,9 +138,9 @@ const CardTitle = styled.h3<{ type?: string }>`
 
 const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   font-size: ${props => {
-    const baseFontSize = props.type === 'birthday' ? 30 : 16;
+    const baseFontSize = props.type === 'birthday' ? 8 : 8;
     const itemCount = props.itemCount || 1;
-    return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 14)}px`;
+    return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 12)}px`;
   }};
   color: #000;
   margin-bottom: 4px;
@@ -191,19 +185,19 @@ const BirthdayContent = styled.div`
   padding-left: 12px;
 
   @media (min-width: 400px) {
-    font-size: 28px;
+    font-size: 24px;
   }
 `;
 
 const WeatherValue = styled.div`
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 600;
   text-align: left;
   margin-top: 0;
   padding-top: 0;
 
   @media (min-width: 400px) {
-    font-size: 48px;
+    font-size: 33px;
   }
 `;
 
@@ -264,13 +258,6 @@ const SearchButton = styled.button`
   }
 `;
 
-const BillboardTitle = styled.span`
-  font-size: 8px;
-  color: #666;
-  margin-left: 8px;
-  font-weight: normal;
-`;
-
 
 const RefreshButton = styled.button`
   background: none;
@@ -314,7 +301,7 @@ function App() {
       const newsData = Array.isArray(newsResponse.data) ? newsResponse.data : [];
       const randomNews = newsData
         .sort(() => Math.random() - 0.5)
-        .slice(0, 1)
+        .slice(0, 2)
         .map(item => ({
           title: item.title || '',
           link: item.link || '#'
@@ -442,12 +429,12 @@ function App() {
                 <CardTitle type="news">
                   그날의 기사
                   <RefreshButton onClick={() => {
-                    const newsResponse = axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
+                    axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
                       .then(response => {
                         const newsData = Array.isArray(response.data) ? response.data : [];
                         const randomNews = newsData
                           .sort(() => Math.random() - 0.5)
-                          .slice(0, 1)
+                          .slice(0, 2)
                           .map(item => ({
                             title: item.title || '',
                             link: item.link || '#'
@@ -461,15 +448,15 @@ function App() {
                     ↻ 다른 기사
                   </RefreshButton>
                 </CardTitle>
-                {newsItems.length > 0 && (
+                {newsItems.map((item, index) => (
                   <CardContent 
-                    key={0}
+                    key={index}
                     type="news"
-                    itemCount={1}
+                    itemCount={newsItems.length}
                   >
-                    {newsItems[0].title}
+                    {item.title}
                   </CardContent>
-                )}
+                ))}
               </Card>
             </CardRow>
           </CardGrid>
