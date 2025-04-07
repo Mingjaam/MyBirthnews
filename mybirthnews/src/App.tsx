@@ -64,7 +64,8 @@ const CardGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-template-areas: 
     "birthday weather"
-    "birthday billboard"
+    "birthday weather-type"
+    "billboard billboard"
     "news news";
   gap: 16px;
   margin-bottom: 24px;
@@ -87,7 +88,7 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
   grid-area: ${props => {
     if (props.type === 'birthday') return 'birthday';
     if (props.type === 'weather') return 'weather';
-    if (props.type === 'zodiac') return 'zodiac';
+    if (props.type === 'weather-type') return 'weather-type';
     if (props.type === 'billboard') return 'billboard';
     if (props.type === 'news') return 'news';
     return 'auto';
@@ -191,6 +192,12 @@ const WeatherValue = styled.div`
   padding-top: 0;
 `;
 
+const WeatherType = styled.div`
+  font-size: 24px;
+  color: #666;
+  margin-top: 8px;
+`;
+
 // ===== 상태 표시 컴포넌트 =====
 const LoadingSpinner = styled.div`
   text-align: center;
@@ -217,6 +224,15 @@ interface NewsItem {
 interface BillboardSong {
   rank: number;
   title: string;
+}
+
+interface WeatherData {
+  temperature: number;
+  weatherType: string;
+}
+
+interface WeatherTypeData {
+  weatherType: string;
 }
 
 const SearchButton = styled.button`
@@ -248,7 +264,8 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [billboardData, setBillboardData] = useState<BillboardSong[]>([]);
-  const [weather, setWeather] = useState<number | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weatherType, setWeatherType] = useState<WeatherTypeData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -286,8 +303,12 @@ function App() {
 
       // 날씨 데이터 가져오기
       const weatherResponse = await axios.get(`https://mybirthnews.onrender.com/weather?date=${selectedDate}`);
-      const temperature = weatherResponse.data?.temperature || null;
-      setWeather(temperature ? parseFloat(temperature) : null);
+      const weatherData = weatherResponse.data;
+      setWeather(weatherData);
+
+      // 날씨 타입 데이터 가져오기
+      const weatherTypeResponse = await axios.get(`https://mybirthnews.com/weather-type?date=${selectedDate}`);
+      setWeatherType(weatherTypeResponse.data);
       
       setIsDataLoaded(true);
     } catch (error) {
@@ -392,7 +413,14 @@ function App() {
             {weather && (
               <Card type="weather">
                 <CardTitle type="weather">그날의 온도는</CardTitle>
-                <WeatherValue>{weather}°C</WeatherValue>
+                <WeatherValue>{weather.temperature}°C</WeatherValue>
+              </Card>
+            )}
+
+            {weatherType && (
+              <Card type="weather-type">
+                <CardTitle type="weather-type">그날의 날씨는</CardTitle>
+                <WeatherValue>{weatherType.weatherType}</WeatherValue>
               </Card>
             )}
 

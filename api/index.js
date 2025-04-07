@@ -67,14 +67,67 @@ app.get("/weather", (req, res) => {
       .pipe(csv())
       .on("data", (data) => {
         if (data["date"] === targetDate) {
+          const snow = parseFloat(data["snow"] || 0);
+          const rain = parseFloat(data["rain"] || 0);
+          const fog = parseFloat(data["fog"] || 0);
+          const wind = parseFloat(data["wind"] || 0);
+          const sun = parseFloat(data["sun"] || 0);
+
+          let weatherType = "흐림";
+          if (snow > 0) weatherType = "눈";
+          else if (rain > 0) weatherType = "비";
+          else if (fog >= 0.1) weatherType = "안개";
+          else if (wind >= 5.0) weatherType = "강풍";
+          else if (sun > 5) weatherType = "맑음";
+
           results.push({
             temperature: data["tem"],
+            weatherType
           });
         }
       })
       .on("end", () => {
         if (results.length > 0) {
-          res.json(results[0]); // 결과 하나만 보여주자
+          res.json(results[0]);
+        } else {
+          res.status(404).send("날씨 데이터 없음");
+        }
+      });
+  });
+
+// 날씨 타입 API
+app.get("/weather-type", (req, res) => {
+    const { date } = req.query;
+    if (!date) return res.status(400).send("date 파라미터가 필요합니다 (예: 2002-06-27)");
+  
+    const parts = date.split("-");
+    const targetDate = `${parseInt(parts[0])}.${parseInt(parts[1])}.${parseInt(parts[2])}`;
+  
+    const results = [];
+  
+    fs.createReadStream("data/seoul_weather.csv")
+      .pipe(csv())
+      .on("data", (data) => {
+        if (data["date"] === targetDate) {
+          const snow = parseFloat(data["snow"] || 0);
+          const rain = parseFloat(data["rain"] || 0);
+          const fog = parseFloat(data["fog"] || 0);
+          const wind = parseFloat(data["wind"] || 0);
+          const sun = parseFloat(data["sun"] || 0);
+
+          let weatherType = "흐림";
+          if (snow > 0) weatherType = "눈";
+          else if (rain > 0) weatherType = "비";
+          else if (fog >= 0.1) weatherType = "안개";
+          else if (wind >= 5.0) weatherType = "강풍";
+          else if (sun > 5) weatherType = "맑음";
+
+          results.push({ weatherType });
+        }
+      })
+      .on("end", () => {
+        if (results.length > 0) {
+          res.json(results[0]);
         } else {
           res.status(404).send("날씨 데이터 없음");
         }
