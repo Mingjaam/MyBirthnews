@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -195,12 +195,6 @@ const WeatherValue = styled.div`
   text-align: left;
   margin-top: 0;
   padding-top: 0;
-`;
-
-const WeatherType = styled.div`
-  font-size: 24px;
-  color: #666;
-  margin-top: 8px;
 `;
 
 // ===== 상태 표시 컴포넌트 =====
