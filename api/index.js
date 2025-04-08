@@ -187,6 +187,7 @@ app.get('/kbs-news', async (req, res) => {
     
     // 제목 추출
     const articles = [];
+    const seenTitles = new Set(); // 중복 제목 체크를 위한 Set
     
     // 여러 선택자 시도
     const selectors = [
@@ -204,8 +205,13 @@ app.get('/kbs-news', async (req, res) => {
             !title.includes('기상정보') && 
             !title.includes('뉴스') && 
             !title.includes('재생목록') && 
-            !title.includes('공유하기')) {
+            !title.includes('공유하기') &&
+            !title.includes('추천 인기 키워드') &&
+            !title.includes('간추린 단신') &&
+            !title.startsWith('[') && // [단독], [속보] 등으로 시작하는 제목 제외
+            !seenTitles.has(title)) { // 중복 제목 제외
           articles.push({ title });
+          seenTitles.add(title); // 제목을 Set에 추가
         }
       });
       
