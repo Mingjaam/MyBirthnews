@@ -200,21 +200,28 @@ app.get('/kbs-news', async (req, res) => {
         '--no-first-run',
         '--no-zygote',
         '--single-process',
-        '--disable-extensions'
+        '--disable-extensions',
+        '--disable-software-rasterizer',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process'
       ],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
+      timeout: 60000 // 브라우저 실행 타임아웃 60초로 설정
     });
     
     const page = await browser.newPage();
     
     // 페이지 로드 타임아웃 설정
-    await page.setDefaultNavigationTimeout(30000);
+    await page.setDefaultNavigationTimeout(60000); // 60초로 설정
     
     // User-Agent 설정
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
     
     // 페이지 이동
-    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.goto(url, { 
+      waitUntil: 'networkidle0',
+      timeout: 60000 // 페이지 로드 타임아웃 60초로 설정
+    });
     
     // 페이지 내용 가져오기
     const content = await page.content();
@@ -261,12 +268,15 @@ app.get('/kbs-news', async (req, res) => {
       }
     }
     
-    if (articles.length === 0) {
+    // 최대 10개의 기사만 반환
+    const limitedArticles = articles.slice(0, 10);
+    
+    if (limitedArticles.length === 0) {
       console.log(`[${currentTime}] ❌ KBS 뉴스 크롤링 실패: 기사 없음`);
       return res.status(404).json({ message: '해당 날짜의 KBS 뉴스를 찾을 수 없습니다.' });
     }
     
-    res.json(articles);
+    res.json(limitedArticles);
   } catch (err) {
     console.error(`[${currentTime}] ❌ KBS 뉴스 크롤링 에러:`, err);
     
@@ -283,7 +293,6 @@ app.get('/kbs-news', async (req, res) => {
     res.status(500).json({ error: 'KBS 뉴스 크롤링 실패', detail: err.message });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`✅ API 서버 실행 중 → http://localhost:${PORT}`);
