@@ -200,13 +200,29 @@ const WeatherValue = styled.div`
   }
 `;
 
-
-
 // ===== 상태 표시 컴포넌트 =====
 const LoadingSpinner = styled.div`
   text-align: center;
   color: #000;
   margin: 16px 0;
+`;
+
+const ButtonLoadingSpinner = styled.div`
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  @keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
 `;
 
 const ErrorMessage = styled.div`
@@ -217,6 +233,50 @@ const ErrorMessage = styled.div`
   border-radius: 8px;
   background-color: #fff;
   border: 1px solid #000;
+`;
+
+const ContactContainer = styled.div`
+  text-align: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e8eb;
+`;
+
+const InfoText = styled.div`
+  font-size: 10px;
+  color: #666;
+  text-align: left;
+  margin: 8px 0;
+  padding: 0 16px;
+  line-height: 1.4;
+`;
+
+const InfoSource = styled.div`
+  font-size: 10px;
+  color: #666;
+  text-align: left;
+  margin: 8px 0;
+  padding: 0 16px;
+  line-height: 1.4;
+  border-top: 1px solid #e5e8eb;
+  padding-top: 16px;
+`;
+
+const InstagramButton = styled.a`
+  display: inline-block;
+  background-color: #E1306C;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #C13584;
+  }
 `;
 
 // ===== 인터페이스 =====
@@ -243,7 +303,7 @@ const SearchButton = styled.button`
   width: 50%;
   padding: 16px;
   font-size: 18px;
-  background-color: #d4c4a8; // 연한 노란색/갈색 버튼 배경 (재생 종이 느낌)
+  background-color: #d4c4a8;
   color: white;
   border: none;
   border-radius: 12px;
@@ -251,9 +311,17 @@ const SearchButton = styled.button`
   margin: 0 auto 24px auto;
   font-weight: 600;
   display: block;
+  position: relative;
+  min-height: 54px;
 
   &:hover {
-    background-color: #c0b090; // 호버 시 약간 더 진한 노란색/갈색
+    background-color: #c0b090;
+  }
+
+  &:disabled {
+    background-color: #d4c4a8;
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 `;
 
@@ -268,9 +336,16 @@ const RefreshButton = styled.button`
   border-radius: 4px;
   margin-left: auto;
   white-space: nowrap;
+  position: relative;
+  min-height: 24px;
   
   &:hover {
     background-color: #f0f0f0;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 `;
 
@@ -440,12 +515,40 @@ function App() {
         </DatePickerContainer>
         
         {selectedDate && !isDataLoaded && (
-          <SearchButton onClick={handleSearch}>
-            그때의 기억 찾아보기
+          <SearchButton 
+            onClick={handleSearch}
+            disabled={loading}
+          >
+            {loading ? <ButtonLoadingSpinner /> : '그때의 기억 찾아보기'}
           </SearchButton>
         )}
         
-        {loading && <LoadingSpinner>그때의 기억을 불러오는중...</LoadingSpinner>}
+        {loading && (
+          <>
+            <LoadingSpinner>그때의 기억을 불러오는중...</LoadingSpinner>
+            <InfoText>
+              • 1970 이후의 기억만 불러 올 수 있습니다.<br />
+              • 정보를 불러 오는데에 최대 1분까지 소요 될 수 있습니다.<br />
+              • 트래픽이 몰릴 경우 오류가 생기거나 대기 시간이 길어 질 수 있습니다.<br />
+              • 1987년 이전의 기사는 제공 되지 못합니다.<br />
+              • 모바일 환경을 위해 제공되는 웹사이트입니다, PC 환경에서 UI가 올바르지 않을 수 있습니다.<br />
+              • 오류가 생겼을 때 다시 한 번 시도해 보세요<br />
+              • 2025년 4월 6일까지의 정보만 제공 됩니다.<br />
+              • 생년월일 정보는 저장되지 않으며 어떤 개인정보도 수집하지 않습니다.<br />
+              <InfoSource>
+                온도, 날씨 정보 제공 : 기상청<br />
+                기사, 뉴스 정보 제공 : KBS, SBS<br />
+                음악 차트 정보 제공 : Billboard
+              </InfoSource>
+              <ContactContainer>
+                기타 문의<br />
+                <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
+                  insta : dev_.min
+                </InstagramButton>
+              </ContactContainer>
+            </InfoText>
+          </>
+        )}
         {error && <ErrorMessage>{error}</ErrorMessage>}
         
         {selectedDate && !loading && !error && isDataLoaded && (
@@ -500,35 +603,67 @@ function App() {
                 <Card type="news">
                   <CardTitle type="news">
                     그날의 기사
-                    <RefreshButton onClick={() => {
-                      // 날짜 파싱
-                      const dateObj = new Date(selectedDate);
-                      const year = dateObj.getFullYear();
-                      
-                      // 1987년 이전 생일인 경우 기사 정보를 제공하지 않음
-                      if (year < 1987) {
-                        setNewsItems([]);
-                        setError('1987년 이전의 기사 정보는 제공되지 않습니다.');
-                        return;
-                      }
-                      
-                      // KBS 뉴스 데이터 가져오기 시도
-                      axios.get(`https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`)
-                        .then(kbsResponse => {
-                          const kbsNewsData = Array.isArray(kbsResponse.data) ? kbsResponse.data : [];
-                          
-                          if (kbsNewsData.length > 0) {
-                            // KBS 뉴스가 있는 경우
-                            const randomNews = kbsNewsData
-                              .sort(() => Math.random() - 0.5)
-                              .slice(0, 3)
-                              .map(item => ({
-                                title: item.title || '',
-                                link: '' // KBS 뉴스는 링크 없음
-                              }));
-                            setNewsItems(randomNews);
-                          } else {
-                            // KBS 뉴스가 없는 경우 SBS 뉴스 시도
+                    <RefreshButton 
+                      onClick={() => {
+                        // 날짜 파싱
+                        const dateObj = new Date(selectedDate);
+                        const year = dateObj.getFullYear();
+                        
+                        // 1987년 이전 생일인 경우 기사 정보를 제공하지 않음
+                        if (year < 1987) {
+                          setNewsItems([]);
+                          setError('1987년 이전의 기사 정보는 제공되지 않습니다.');
+                          return;
+                        }
+                        
+                        // KBS 뉴스 데이터 가져오기 시도
+                        axios.get(`https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`)
+                          .then(kbsResponse => {
+                            const kbsNewsData = Array.isArray(kbsResponse.data) ? kbsResponse.data : [];
+                            
+                            if (kbsNewsData.length > 0) {
+                              // KBS 뉴스가 있는 경우
+                              const randomNews = kbsNewsData
+                                .sort(() => Math.random() - 0.5)
+                                .slice(0, 3)
+                                .map(item => ({
+                                  title: item.title || '',
+                                  link: '' // KBS 뉴스는 링크 없음
+                                }));
+                              setNewsItems(randomNews);
+                            } else {
+                              // KBS 뉴스가 없는 경우 SBS 뉴스 시도
+                              axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
+                                .then(sbsResponse => {
+                                  const sbsNewsData = Array.isArray(sbsResponse.data) ? sbsResponse.data : [];
+                                  
+                                  if (sbsNewsData.length > 0) {
+                                    // SBS 뉴스가 있는 경우
+                                    const randomNews = sbsNewsData
+                                      .sort(() => Math.random() - 0.5)
+                                      .slice(0, 3)
+                                      .map(item => ({
+                                        title: item.title || '',
+                                        link: item.link || '#'
+                                      }));
+                                    setNewsItems(randomNews);
+                                  } else {
+                                    // SBS 뉴스도 없는 경우
+                                    setNewsItems([]);
+                                    setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+                                  }
+                                })
+                                .catch(sbsError => {
+                                  console.error('SBS 뉴스 가져오기 실패:', sbsError);
+                                  setNewsItems([]);
+                                  setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+                                });
+                            }
+                          })
+                          .catch(kbsError => {
+                            console.error('KBS 뉴스 가져오기 실패:', kbsError);
+                            
+                            // KBS 뉴스 가져오기 실패 시 SBS 뉴스 시도
                             axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
                               .then(sbsResponse => {
                                 const sbsNewsData = Array.isArray(sbsResponse.data) ? sbsResponse.data : [];
@@ -554,40 +689,11 @@ function App() {
                                 setNewsItems([]);
                                 setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
                               });
-                          }
-                        })
-                        .catch(kbsError => {
-                          console.error('KBS 뉴스 가져오기 실패:', kbsError);
-                          
-                          // KBS 뉴스 가져오기 실패 시 SBS 뉴스 시도
-                          axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
-                            .then(sbsResponse => {
-                              const sbsNewsData = Array.isArray(sbsResponse.data) ? sbsResponse.data : [];
-                              
-                              if (sbsNewsData.length > 0) {
-                                // SBS 뉴스가 있는 경우
-                                const randomNews = sbsNewsData
-                                  .sort(() => Math.random() - 0.5)
-                                  .slice(0, 3)
-                                  .map(item => ({
-                                    title: item.title || '',
-                                    link: item.link || '#'
-                                  }));
-                                setNewsItems(randomNews);
-                              } else {
-                                // SBS 뉴스도 없는 경우
-                                setNewsItems([]);
-                                setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
-                              }
-                            })
-                            .catch(sbsError => {
-                              console.error('SBS 뉴스 가져오기 실패:', sbsError);
-                              setNewsItems([]);
-                              setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
-                            });
-                        });
-                    }}>
-                      ↻ 다른 기사
+                          });
+                      }}
+                      disabled={loading}
+                    >
+                      {loading ? <ButtonLoadingSpinner /> : '↻ 다른 기사'}
                     </RefreshButton>
                   </CardTitle>
                   {newsItems.map((item, index) => (
@@ -602,6 +708,27 @@ function App() {
                 </Card>
               </CardRow>
             )}
+            <InfoText>
+              • 1970 이후의 기억만 불러 올 수 있습니다.<br />
+              • 정보를 불러 오는데에 최대 1분까지 소요 될 수 있습니다.<br />
+              • 트래픽이 몰릴 경우 오류가 생기거나 대기 시간이 길어 질 수 있습니다.<br />
+              • 1987년 이전의 기사는 제공 되지 못합니다.<br />
+              • 모바일 환경을 위해 제공되는 웹사이트입니다, PC 환경에서 UI가 올바르지 않을 수 있습니다.<br />
+              • 오류가 생겼을 때 다시 한 번 시도해 보세요<br />
+              • 2025년 4월 6일까지의 정보만 제공 됩니다.<br />
+              • 생년월일 정보는 저장되지 않으며 어떤 개인정보도 수집하지 않습니다.<br />
+              <InfoSource>
+                온도, 날씨 정보 제공 : 기상청<br />
+                기사, 뉴스 정보 제공 : KBS, SBS<br />
+                음악 차트 정보 제공 : Billboard
+              </InfoSource>
+              <ContactContainer>
+                기타 문의<br />
+                <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
+                  insta : dev_.min
+                </InstagramButton>
+              </ContactContainer>
+            </InfoText>
           </CardGrid>
         )}
       </MainContent>
