@@ -165,8 +165,10 @@ app.get('/kbs-news', async (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET');
   
   const { date } = req.query;
+  const currentTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
   
   if (!date) {
+    console.log(`[${currentTime}] ❌ KBS 뉴스 요청 실패: 날짜 미제공`);
     return res.status(400).json({ error: '날짜를 YYYY-MM-DD 형식으로 제공해주세요.' });
   }
   
@@ -176,6 +178,7 @@ app.get('/kbs-news', async (req, res) => {
   
   // 1987년 이전 날짜 체크
   if (year < 1987) {
+    console.log(`[${currentTime}] ❌ KBS 뉴스 요청 실패: ${year}년은 지원하지 않음`);
     return res.status(400).json({ error: 'KBS 뉴스는 1987년부터의 데이터만 제공합니다.' });
   }
   
@@ -184,12 +187,22 @@ app.get('/kbs-news', async (req, res) => {
   const url = `https://news.kbs.co.kr/news/pc/program/program.do?bcd=0001&ref=pGnb#${formattedDate}`;
   
   try {
-    console.log(`KBS 뉴스 크롤링 시도: ${url}`);
+    console.log(`[${currentTime}] 🔍 KBS 뉴스 크롤링 시작: ${date}`);
     
     // Puppeteer로 브라우저 실행
     const browser = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-extensions'
+      ],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null
     });
     
     const page = await browser.newPage();
@@ -243,24 +256,19 @@ app.get('/kbs-news', async (req, res) => {
       });
       
       if (articles.length > 0) {
-        console.log(`✅ ${selector} 선택자로 ${articles.length}개 기사 크롤링 완료`);
+        console.log(`[${currentTime}] ✅ KBS 뉴스 크롤링 성공: ${articles.length}개 기사 발견`);
         break;
       }
     }
     
-    // 크롤링한 모든 제목 출력
-    console.log('크롤링한 모든 기사 제목:');
-    articles.forEach((article, index) => {
-      console.log(`[${index + 1}] ${article.title}`);
-    });
-    
     if (articles.length === 0) {
+      console.log(`[${currentTime}] ❌ KBS 뉴스 크롤링 실패: 기사 없음`);
       return res.status(404).json({ message: '해당 날짜의 KBS 뉴스를 찾을 수 없습니다.' });
     }
     
     res.json(articles);
   } catch (err) {
-    console.error('KBS 뉴스 크롤링 에러:', err);
+    console.error(`[${currentTime}] ❌ KBS 뉴스 크롤링 에러:`, err);
     
     // 에러 상세 정보 로깅
     if (err.response) {
