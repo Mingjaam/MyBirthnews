@@ -295,8 +295,18 @@ function App() {
     setError(null);
     
     try {
-      // 뉴스 데이터 가져오기
-      const newsResponse = await axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`);
+      // 날짜 파싱
+      const dateObj = new Date(selectedDate);
+      const year = dateObj.getFullYear();
+      
+      // 뉴스 데이터 가져오기 (1987-1997년은 KBS, 그 외는 SBS)
+      let newsResponse;
+      if (year >= 1987 && year <= 1997) {
+        newsResponse = await axios.get(`https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`);
+      } else {
+        newsResponse = await axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`);
+      }
+      
       const newsData = Array.isArray(newsResponse.data) ? newsResponse.data : [];
       const randomNews = newsData
         .sort(() => Math.random() - 0.5)
@@ -428,7 +438,16 @@ function App() {
                 <CardTitle type="news">
                   그날의 기사
                   <RefreshButton onClick={() => {
-                    axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
+                    // 날짜 파싱
+                    const dateObj = new Date(selectedDate);
+                    const year = dateObj.getFullYear();
+                    
+                    // 1987-1997년은 KBS, 그 외는 SBS
+                    const apiUrl = (year >= 1987 && year <= 1997) 
+                      ? `https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`
+                      : `https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`;
+                    
+                    axios.get(apiUrl)
                       .then(response => {
                         const newsData = Array.isArray(response.data) ? response.data : [];
                         const randomNews = newsData

@@ -157,6 +157,59 @@ app.get("/billboard", async (req, res) => {
   }
 });
 
+// ✅ 4. KBS 뉴스 크롤링 (1987-1997년)
+app.get('/kbs-news', async (req, res) => {
+  const { date } = req.query;
+  
+  if (!date) {
+    return res.status(400).json({ error: '날짜를 YYYY-MM-DD 형식으로 제공해주세요.' });
+  }
+  
+  // 날짜 파싱
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  
+  // 1987-1997년 범위 체크
+  if (year < 1987 || year > 1997) {
+    return res.status(400).json({ error: 'KBS 뉴스는 1987년부터 1997년까지의 데이터만 제공합니다.' });
+  }
+  
+  // KBS 뉴스 URL 형식에 맞게 날짜 변환 (YYYYMMDD)
+  const formattedDate = date.replace(/-/g, '');
+  const url = `https://news.kbs.co.kr/news/pc/program/program.do?bcd=0001&ref=pGnb#${formattedDate}`;
+  
+  try {
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    const articles = [];
+    
+    // KBS 뉴스 기사 크롤링
+    $('a.box-content').each((_, el) => {
+      const title = $(el).find('p.title').text().trim();
+      const link = $(el).attr('href');
+      const category = $(el).find('span.field').text().trim();
+      
+      if (title) {
+        // 상대 경로를 절대 경로로 변환
+        const fullLink = link ? `https://news.kbs.co.kr${link}` : '#';
+        articles.push({ 
+          title, 
+          link: fullLink,
+          category: category || '뉴스'
+        });
+      }
+    });
+    
+    if (articles.length === 0) {
+      return res.status(404).json({ message: '해당 날짜의 KBS 뉴스를 찾을 수 없습니다.' });
+    }
+    
+    res.json(articles);
+  } catch (err) {
+    res.status(500).json({ error: 'KBS 뉴스 크롤링 실패', detail: err.message });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`✅ API 서버 실행 중 → http://localhost:${PORT}`);
