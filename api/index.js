@@ -159,6 +159,10 @@ app.get("/billboard", async (req, res) => {
 
 // ✅ 4. KBS 뉴스 크롤링 (1987-1997년)
 app.get('/kbs-news', async (req, res) => {
+  // CORS 헤더 추가
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  
   const { date } = req.query;
   
   if (!date) {
@@ -181,8 +185,14 @@ app.get('/kbs-news', async (req, res) => {
   try {
     console.log(`KBS 뉴스 크롤링 시도: ${url}`);
     
-    // axios로 페이지 가져오기
-    const { data } = await axios.get(url);
+    // axios로 페이지 가져오기 - 타임아웃 설정 추가
+    const { data } = await axios.get(url, { 
+      timeout: 10000, // 10초 타임아웃
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
+    
     const $ = cheerio.load(data);
     
     // 제목 추출
@@ -234,6 +244,17 @@ app.get('/kbs-news', async (req, res) => {
     res.json(articles);
   } catch (err) {
     console.error('KBS 뉴스 크롤링 에러:', err);
+    
+    // 에러 상세 정보 로깅
+    if (err.response) {
+      console.error('응답 상태:', err.response.status);
+      console.error('응답 헤더:', err.response.headers);
+    } else if (err.request) {
+      console.error('요청 실패:', err.request);
+    } else {
+      console.error('에러 메시지:', err.message);
+    }
+    
     res.status(500).json({ error: 'KBS 뉴스 크롤링 실패', detail: err.message });
   }
 });
