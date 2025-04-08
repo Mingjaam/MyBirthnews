@@ -170,9 +170,9 @@ app.get('/kbs-news', async (req, res) => {
   const dateObj = new Date(date);
   const year = dateObj.getFullYear();
   
-  // 1987-1997년 범위 체크
-  if (year < 1987 || year > 1997) {
-    return res.status(400).json({ error: 'KBS 뉴스는 1987년부터 1997년까지의 데이터만 제공합니다.' });
+  // 1987년 이전 날짜 체크
+  if (year < 1987) {
+    return res.status(400).json({ error: 'KBS 뉴스는 1987년부터의 데이터만 제공합니다.' });
   }
   
   // KBS 뉴스 URL 형식에 맞게 날짜 변환 (YYYYMMDD)
