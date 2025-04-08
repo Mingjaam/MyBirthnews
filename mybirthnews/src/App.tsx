@@ -609,7 +609,7 @@ function App() {
             <ContactContainer>
               기타 문의<br />
               <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
-                insta : dev_.min
+                dev_.min
               </InstagramButton>
             </ContactContainer>
           </>
