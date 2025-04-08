@@ -379,58 +379,13 @@ function App() {
         setNewsItems([]);
         setError('1987년 이전의 기사 정보는 제공되지 않습니다.');
       } else {
-        // KBS 뉴스 데이터 가져오기 시도
-        try {
-          const kbsResponse = await axios.get(`https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`);
-          const kbsNewsData = Array.isArray(kbsResponse.data) ? kbsResponse.data : [];
-          
-          if (kbsNewsData.length > 0) {
-            // KBS 뉴스가 있는 경우
-            const randomNews = kbsNewsData
-              .sort(() => Math.random() - 0.5)
-              .slice(0, 3)
-              .map(item => ({
-                title: item.title || '',
-                link: '' // KBS 뉴스는 링크 없음
-              }));
-            setNewsItems(randomNews);
-          } else {
-            // KBS 뉴스가 없는 경우 SBS 뉴스 시도
-            try {
-              const sbsResponse = await axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`);
-              const sbsNewsData = Array.isArray(sbsResponse.data) ? sbsResponse.data : [];
-              
-              if (sbsNewsData.length > 0) {
-                // SBS 뉴스가 있는 경우
-                const randomNews = sbsNewsData
-                  .sort(() => Math.random() - 0.5)
-                  .slice(0, 3)
-                  .map(item => ({
-                    title: item.title || '',
-                    link: item.link || '#'
-                  }));
-                setNewsItems(randomNews);
-              } else {
-                // SBS 뉴스도 없는 경우
-                setNewsItems([]);
-                setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
-              }
-            } catch (sbsError) {
-              console.error('SBS 뉴스 가져오기 실패:', sbsError);
-              setNewsItems([]);
-              setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
-            }
-          }
-        } catch (kbsError) {
-          console.error('KBS 뉴스 가져오기 실패:', kbsError);
-          
-          // KBS 뉴스 가져오기 실패 시 SBS 뉴스 시도
+        // 1998년 이후는 SBS 뉴스로 바로 요청
+        if (year >= 1998) {
           try {
             const sbsResponse = await axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`);
             const sbsNewsData = Array.isArray(sbsResponse.data) ? sbsResponse.data : [];
             
             if (sbsNewsData.length > 0) {
-              // SBS 뉴스가 있는 경우
               const randomNews = sbsNewsData
                 .sort(() => Math.random() - 0.5)
                 .slice(0, 3)
@@ -440,12 +395,56 @@ function App() {
                 }));
               setNewsItems(randomNews);
             } else {
-              // SBS 뉴스도 없는 경우
               setNewsItems([]);
               setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
             }
           } catch (sbsError) {
             console.error('SBS 뉴스 가져오기 실패:', sbsError);
+            setNewsItems([]);
+            setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+          }
+        } else {
+          // 1987-1997년은 KBS 뉴스로 먼저 시도
+          try {
+            const kbsResponse = await axios.get(`https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`);
+            const kbsNewsData = Array.isArray(kbsResponse.data) ? kbsResponse.data : [];
+            
+            if (kbsNewsData.length > 0) {
+              const randomNews = kbsNewsData
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3)
+                .map(item => ({
+                  title: item.title || '',
+                  link: '' // KBS 뉴스는 링크 없음
+                }));
+              setNewsItems(randomNews);
+            } else {
+              // KBS 뉴스가 없는 경우 SBS 뉴스 시도
+              try {
+                const sbsResponse = await axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`);
+                const sbsNewsData = Array.isArray(sbsResponse.data) ? sbsResponse.data : [];
+                
+                if (sbsNewsData.length > 0) {
+                  const randomNews = sbsNewsData
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 3)
+                    .map(item => ({
+                      title: item.title || '',
+                      link: item.link || '#'
+                    }));
+                  setNewsItems(randomNews);
+                } else {
+                  setNewsItems([]);
+                  setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+                }
+              } catch (sbsError) {
+                console.error('SBS 뉴스 가져오기 실패:', sbsError);
+                setNewsItems([]);
+                setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+              }
+            }
+          } catch (kbsError) {
+            console.error('KBS 뉴스 가져오기 실패:', kbsError);
             setNewsItems([]);
             setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
           }
