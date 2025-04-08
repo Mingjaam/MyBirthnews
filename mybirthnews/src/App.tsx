@@ -223,6 +223,9 @@ const ErrorMessage = styled.div`
 interface NewsItem {
   title: string;
   link: string;
+  category?: string;
+  writer?: string;
+  imgSrc?: string;
 }
 
 interface BillboardSong {
@@ -301,8 +304,11 @@ function App() {
       
       // 뉴스 데이터 가져오기 (1987-1997년은 KBS, 그 외는 SBS)
       let newsResponse;
+      let isKbsNews = false;
+      
       if (year >= 1987 && year <= 1997) {
         newsResponse = await axios.get(`https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`);
+        isKbsNews = true;
       } else {
         newsResponse = await axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`);
       }
@@ -313,7 +319,7 @@ function App() {
         .slice(0, 3)
         .map(item => ({
           title: item.title || '',
-          link: item.link || '#'
+          link: isKbsNews ? '' : (item.link || '#')
         }));
       setNewsItems(randomNews);
 
@@ -443,7 +449,8 @@ function App() {
                     const year = dateObj.getFullYear();
                     
                     // 1987-1997년은 KBS, 그 외는 SBS
-                    const apiUrl = (year >= 1987 && year <= 1997) 
+                    const isKbsNews = (year >= 1987 && year <= 1997);
+                    const apiUrl = isKbsNews 
                       ? `https://mybirthnews.onrender.com/kbs-news?date=${selectedDate}`
                       : `https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`;
                     
@@ -455,7 +462,7 @@ function App() {
                           .slice(0, 3)
                           .map(item => ({
                             title: item.title || '',
-                            link: item.link || '#'
+                            link: isKbsNews ? '' : (item.link || '#')
                           }));
                         setNewsItems(randomNews);
                       })
@@ -473,6 +480,11 @@ function App() {
                     itemCount={newsItems.length}
                   >
                     {item.title}
+                    {item.category && (
+                      <span style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                        {item.category} | {item.writer || 'KBS'}
+                      </span>
+                    )}
                   </CardContent>
                 ))}
               </Card>

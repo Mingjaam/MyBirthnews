@@ -183,20 +183,12 @@ app.get('/kbs-news', async (req, res) => {
     const $ = cheerio.load(data);
     const articles = [];
     
-    // KBS 뉴스 기사 크롤링
+    // KBS 뉴스 기사 크롤링 - 제목만 추출
     $('a.box-content').each((_, el) => {
-      const title = $(el).find('p.title').text().trim();
-      const link = $(el).attr('href');
-      const category = $(el).find('span.field').text().trim();
+      const title = $(el).find('.txt-wrapper .title').text().trim();
       
       if (title) {
-        // 상대 경로를 절대 경로로 변환
-        const fullLink = link ? `https://news.kbs.co.kr${link}` : '#';
-        articles.push({ 
-          title, 
-          link: fullLink,
-          category: category || '뉴스'
-        });
+        articles.push({ title });
       }
     });
     
