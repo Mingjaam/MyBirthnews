@@ -27,6 +27,12 @@ const Header = styled.div`
 
 const MainContent = styled.div`
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - 100px);
+  padding-top: 40px;
 `;
 
 const Title = styled.h1`
@@ -38,14 +44,31 @@ const Title = styled.h1`
 `;
 
 // ===== 입력 컴포넌트 =====
+const InitialContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  width: 100%;
+  transition: opacity 0.3s ease;
+  opacity: ${props => props.hidden ? 0 : 1};
+  display: ${props => props.hidden ? 'none' : 'flex'};
+  margin-top: 40px;
+`;
+
 const DateLabel = styled.div`
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 12px;
+  text-align: center;
+  width: 100%;
 `;
 
 const DatePickerContainer = styled.div`
   margin-bottom: 24px;
+  width: 100%;
+  max-width: 300px;
 `;
 
 const DatePicker = styled.input`
@@ -237,10 +260,6 @@ const ContactContainer = styled.div`
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid #e5e8eb;
-  position: sticky;
-  bottom: 0;
-  background-color: rgb(254, 243, 215);
-  padding-bottom: 16px;
 `;
 
 const InfoText = styled.div`
@@ -250,9 +269,6 @@ const InfoText = styled.div`
   margin: 8px 0;
   padding: 0 16px;
   line-height: 1.4;
-  position: sticky;
-  bottom: 100px;
-  background-color: rgb(254, 243, 215);
 `;
 
 const InfoSource = styled.div`
@@ -264,9 +280,6 @@ const InfoSource = styled.div`
   line-height: 1.4;
   border-top: 1px solid #e5e8eb;
   padding-top: 16px;
-  position: sticky;
-  bottom: 150px;
-  background-color: rgb(254, 243, 215);
 `;
 
 const InstagramButton = styled.a`
@@ -280,6 +293,9 @@ const InstagramButton = styled.a`
   margin-top: 8px;
   transition: background-color 0.2s;
   cursor: pointer;
+  font-size: 12px;
+  width: 120px;
+  text-align: center;
 
   &:hover {
     background-color: #C13584;
@@ -294,14 +310,37 @@ const ShareButton = styled.button`
   border-radius: 20px;
   text-decoration: none;
   font-weight: bold;
-  margin-top: 16px;
+  margin-top: 8px;
   transition: background-color 0.2s;
   cursor: pointer;
   border: none;
   font-size: 12px;
+  width: 120px;
+  text-align: center;
 
   &:hover {
     background-color: #45a049;
+  }
+`;
+
+const RefreshButton = styled.button`
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #d4c4a8;
+  color: white;
+  font-weight: bold;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+  width: 120px;
+  text-align: center;
+
+  &:hover {
+    background-color: #c0b090;
   }
 `;
 
@@ -326,7 +365,8 @@ interface WeatherTypeData {
 }
 
 const SearchButton = styled.button`
-  width: 50%;
+  width: 100%;
+  max-width: 300px;
   padding: 16px;
   font-size: 18px;
   background-color: #d4c4a8;
@@ -334,9 +374,7 @@ const SearchButton = styled.button`
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  margin: 0 auto 24px auto;
   font-weight: 600;
-  display: block;
   position: relative;
   min-height: 54px;
 
@@ -346,30 +384,6 @@ const SearchButton = styled.button`
 
   &:disabled {
     background-color: #d4c4a8;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-`;
-
-
-const RefreshButton = styled.button`
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: auto;
-  white-space: nowrap;
-  position: relative;
-  min-height: 24px;
-  
-  &:hover {
-    background-color: #f0f0f0;
-  }
-
-  &:disabled {
     cursor: not-allowed;
     opacity: 0.7;
   }
@@ -548,30 +562,35 @@ function App() {
       </Header>
       
       <MainContent>
-        <DateLabel>나의 생일은</DateLabel>
-        <DatePickerContainer>
-          <DatePicker
-            type="date"
-            value={selectedDate}
-            onChange={(e) => {
-              setSelectedDate(e.target.value);
-              setIsDataLoaded(false);
-            }}
-          />
-        </DatePickerContainer>
-        
-        {selectedDate && !isDataLoaded && (
-          <SearchButton 
-            onClick={handleSearch}
-            disabled={loading}
-          >
-            {loading ? <ButtonLoadingSpinner /> : '그때의 기억 찾아보기'}
-          </SearchButton>
-        )}
-        
+        <InitialContent hidden={isDataLoaded}>
+          <DateLabel>나의 생일은</DateLabel>
+          <DatePickerContainer>
+            <DatePicker
+              type="date"
+              value={selectedDate}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setIsDataLoaded(false);
+              }}
+            />
+          </DatePickerContainer>
+          
+          {selectedDate && !isDataLoaded && (
+            <SearchButton 
+              onClick={handleSearch}
+              disabled={loading}
+            >
+              {loading ? <ButtonLoadingSpinner /> : '그때의 기억 찾아보기'}
+            </SearchButton>
+          )}
+        </InitialContent>
+
         {loading && (
+          <LoadingSpinner>그때의 기억을 불러오는중...</LoadingSpinner>
+        )}
+
+        {!isDataLoaded && (
           <>
-            <LoadingSpinner>그때의 기억을 불러오는중...</LoadingSpinner>
             <InfoText>
               • 1970 이후의 기억만 불러 올 수 있습니다.<br />
               • 정보를 불러 오는데에 최대 1분까지 소요 될 수 있습니다.<br />
@@ -581,20 +600,21 @@ function App() {
               • 오류가 생겼을 때 다시 한 번 시도해 보세요<br />
               • 2025년 4월 6일까지의 정보만 제공 됩니다.<br />
               • 생년월일 정보는 저장되지 않으며 어떤 개인정보도 수집하지 않습니다.<br />
-              <InfoSource>
-                온도, 날씨 정보 제공 : 기상청<br />
-                기사, 뉴스 정보 제공 : KBS, SBS<br />
-                음악 차트 정보 제공 : Billboard
-              </InfoSource>
-              <ContactContainer>
-                기타 문의<br />
-                <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
-                  insta : dev_.min
-                </InstagramButton>
-              </ContactContainer>
             </InfoText>
+            <InfoSource>
+              온도, 날씨 정보 제공 : 기상청<br />
+              기사, 뉴스 정보 제공 : KBS, SBS<br />
+              음악 차트 정보 제공 : Billboard
+            </InfoSource>
+            <ContactContainer>
+              기타 문의<br />
+              <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
+                insta : dev_.min
+              </InstagramButton>
+            </ContactContainer>
           </>
         )}
+        
         {error && <ErrorMessage>{error}</ErrorMessage>}
         
         {selectedDate && !loading && !error && isDataLoaded && (
@@ -678,13 +698,17 @@ function App() {
               음악 차트 정보 제공 : Billboard
             </InfoSource>
             <ContactContainer>
-              기타 문의<br />
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                <RefreshButton onClick={() => window.location.reload()}>
+                  다시하기
+                </RefreshButton>
+                <ShareButton onClick={handleShare}>
+                  링크 공유하기
+                </ShareButton>
+              </div>
               <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
                 insta : dev_.min
               </InstagramButton>
-              <ShareButton onClick={handleShare}>
-                링크 공유하기
-              </ShareButton>
             </ContactContainer>
           </CardGrid>
         )}
