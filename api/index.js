@@ -68,22 +68,8 @@ app.get("/weather", (req, res) => {
       .pipe(csv())
       .on("data", (data) => {
         if (data["date"] === targetDate) {
-          const snow = parseFloat(data["snow"] || 0);
-          const rain = parseFloat(data["rain"] || 0);
-          const fog = parseFloat(data["fog"] || 0);
-          const wind = parseFloat(data["wind"] || 0);
-          const sun = parseFloat(data["sun"] || 0);
-
-          let weatherType = "맑음";
-          if (snow > 0) weatherType = "눈";
-          else if (rain > 0) weatherType = "비";
-          else if (fog >= 0.1) weatherType = "안개";
-          else if (wind >= 4.0) weatherType = "강풍";
-          else if (sun < 1.5) weatherType = "흐림";
-
           results.push({
-            temperature: data["tem"],
-            weatherType
+            temperature: data["tem"]
           });
         }
       })
@@ -96,7 +82,7 @@ app.get("/weather", (req, res) => {
       });
   });
 
-// 날씨 타입 API
+// ✅ 3. 날씨 타입 API
 app.get("/weather-type", (req, res) => {
     const { date } = req.query;
     if (!date) return res.status(400).send("date 파라미터가 필요합니다 (예: 2002-06-27)");
@@ -136,7 +122,7 @@ app.get("/weather-type", (req, res) => {
   });
 
 
-// ✅ 3. 빌보드 차트 크롤링 (제목만)
+// ✅ 4. 빌보드 차트 크롤링 (제목만)
 app.get("/billboard", async (req, res) => {
   const { date } = req.query;
   if (!date) return res.status(400).send("date 파라미터가 필요합니다 (예: 2002-06-27)");
@@ -158,7 +144,7 @@ app.get("/billboard", async (req, res) => {
   }
 });
 
-// ✅ 4. KBS 뉴스 크롤링 (1987-1997년)
+// ✅ 5. KBS 뉴스 크롤링 (1987-1997년)
 app.get('/kbs-news', async (req, res) => {
   // CORS 헤더 추가
   res.header('Access-Control-Allow-Origin', '*');
