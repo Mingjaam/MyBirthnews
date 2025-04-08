@@ -4,6 +4,7 @@ const cheerio = require("cheerio");
 const cors = require("cors");
 const fs = require("fs");
 const csv = require("csv-parser");
+const puppeteer = require("puppeteer");
 
 
 const app = express();
@@ -185,15 +186,30 @@ app.get('/kbs-news', async (req, res) => {
   try {
     console.log(`KBS 뉴스 크롤링 시도: ${url}`);
     
-    // axios로 페이지 가져오기 - 타임아웃 설정 추가
-    const { data } = await axios.get(url, { 
-      timeout: 10000, // 10초 타임아웃
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
+    // Puppeteer로 브라우저 실행
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     
-    const $ = cheerio.load(data);
+    const page = await browser.newPage();
+    
+    // 페이지 로드 타임아웃 설정
+    await page.setDefaultNavigationTimeout(30000);
+    
+    // User-Agent 설정
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    
+    // 페이지 이동
+    await page.goto(url, { waitUntil: 'networkidle0' });
+    
+    // 페이지 내용 가져오기
+    const content = await page.content();
+    
+    // 브라우저 종료
+    await browser.close();
+    
+    const $ = cheerio.load(content);
     
     // 제목 추출
     const articles = [];
@@ -204,7 +220,8 @@ app.get('/kbs-news', async (req, res) => {
       'p.title',
       '.txt-wrapper .title',
       '.box-content .title',
-      'a.box-content .title'
+      'a.box-content .title',
+      '.box-contents a.box-content .title'
     ];
     
     for (const selector of selectors) {
