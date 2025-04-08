@@ -237,6 +237,10 @@ const ContactContainer = styled.div`
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid #e5e8eb;
+  position: sticky;
+  bottom: 0;
+  background-color: rgb(254, 243, 215);
+  padding-bottom: 16px;
 `;
 
 const InfoText = styled.div`
@@ -246,6 +250,9 @@ const InfoText = styled.div`
   margin: 8px 0;
   padding: 0 16px;
   line-height: 1.4;
+  position: sticky;
+  bottom: 100px;
+  background-color: rgb(254, 243, 215);
 `;
 
 const InfoSource = styled.div`
@@ -257,6 +264,9 @@ const InfoSource = styled.div`
   line-height: 1.4;
   border-top: 1px solid #e5e8eb;
   padding-top: 16px;
+  position: sticky;
+  bottom: 150px;
+  background-color: rgb(254, 243, 215);
 `;
 
 const InstagramButton = styled.a`
@@ -284,11 +294,11 @@ const ShareButton = styled.button`
   border-radius: 20px;
   text-decoration: none;
   font-weight: bold;
-  margin-top: 8px;
+  margin-top: 16px;
   transition: background-color 0.2s;
   cursor: pointer;
   border: none;
-  font-size: 14px;
+  font-size: 12px;
 
   &:hover {
     background-color: #45a049;
@@ -661,21 +671,21 @@ function App() {
               • 오류가 생겼을 때 다시 한 번 시도해 보세요<br />
               • 2025년 4월 6일까지의 정보만 제공 됩니다.<br />
               • 생년월일 정보는 저장되지 않으며 어떤 개인정보도 수집하지 않습니다.<br />
-              <InfoSource>
-                온도, 날씨 정보 제공 : 기상청<br />
-                기사, 뉴스 정보 제공 : KBS, SBS<br />
-                음악 차트 정보 제공 : Billboard
-              </InfoSource>
-              <ContactContainer>
-                기타 문의<br />
-                <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
-                  insta : dev_.min
-                </InstagramButton>
-                <ShareButton onClick={handleShare}>
-                  링크 공유하기
-                </ShareButton>
-              </ContactContainer>
             </InfoText>
+            <InfoSource>
+              온도, 날씨 정보 제공 : 기상청<br />
+              기사, 뉴스 정보 제공 : KBS, SBS<br />
+              음악 차트 정보 제공 : Billboard
+            </InfoSource>
+            <ContactContainer>
+              기타 문의<br />
+              <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
+                insta : dev_.min
+              </InstagramButton>
+              <ShareButton onClick={handleShare}>
+                링크 공유하기
+              </ShareButton>
+            </ContactContainer>
           </CardGrid>
         )}
       </MainContent>
