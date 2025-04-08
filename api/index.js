@@ -4,6 +4,7 @@ const cheerio = require("cheerio");
 const cors = require("cors");
 const fs = require("fs");
 const csv = require("csv-parser");
+const puppeteer = require("puppeteer");
 
 
 const app = express();
@@ -179,17 +180,46 @@ app.get('/kbs-news', async (req, res) => {
   const url = `https://news.kbs.co.kr/news/pc/program/program.do?bcd=0001&ref=pGnb#${formattedDate}`;
   
   try {
-    const { data } = await axios.get(url);
-    const $ = cheerio.load(data);
-    const articles = [];
+    console.log(`Puppeteer로 KBS 뉴스 크롤링 시도: ${url}`);
     
-    // KBS 뉴스 기사 크롤링 - 제목만 추출
-    $('a.box-content').each((_, el) => {
-      const title = $(el).find('.txt-wrapper .title').text().trim();
+    // Puppeteer 브라우저 실행
+    const browser = await puppeteer.launch({
+      headless: "new", // 새로운 Headless 모드 사용
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    
+    // 페이지 내부에서 실행되는 JS로 제목만 추출
+    const articles = await page.evaluate(() => {
+      const titleNodes = document.querySelectorAll('p.title');
+      const result = [];
       
-      if (title) {
-        articles.push({ title });
-      }
+      titleNodes.forEach((titleEl) => {
+        const title = titleEl.textContent.trim();
+        // 불필요한 텍스트 필터링
+        if (title && 
+            !title.includes('기상정보') && 
+            !title.includes('뉴스') && 
+            !title.includes('재생목록') && 
+            !title.includes('공유하기')) {
+          result.push({ title });
+        }
+      });
+      
+      return result;
+    });
+    
+    // 브라우저 종료
+    await browser.close();
+    
+    console.log(`✅ ${articles.length}개 기사 크롤링 완료`);
+    
+    // 크롤링한 모든 제목 출력
+    console.log('크롤링한 모든 기사 제목:');
+    articles.forEach((article, index) => {
+      console.log(`[${index + 1}] ${article.title}`);
     });
     
     if (articles.length === 0) {
@@ -198,6 +228,7 @@ app.get('/kbs-news', async (req, res) => {
     
     res.json(articles);
   } catch (err) {
+    console.error('KBS 뉴스 크롤링 에러:', err);
     res.status(500).json({ error: 'KBS 뉴스 크롤링 실패', detail: err.message });
   }
 });
