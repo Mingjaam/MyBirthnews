@@ -418,7 +418,6 @@ function App() {
       // 1987년 이전 생일인 경우 기사 정보를 제공하지 않음
       if (year < 1987) {
         setNewsItems([]);
-        setError('1987년 이전의 기사 정보는 제공되지 않습니다.');
       } else {
         // 1998년 이후는 SBS 뉴스로 바로 요청
         if (year >= 1998) {
@@ -664,7 +663,7 @@ function App() {
               </div>
             </CardRow>
 
-            {newsItems.length > 0 && (
+            {newsItems.length > 0 && new Date(selectedDate).getFullYear() >= 1987 && (
               <CardRow>
                 <Card type="news">
                   <CardTitle type="news">
