@@ -106,7 +106,7 @@ app.get("/weather-type", (req, res) => {
   
     const results = [];
   
-    fs.createReadStream("data/seoul_weather.csv")
+    fs.createReadStream("data/weather_plus.csv")
       .pipe(csv())
       .on("data", (data) => {
         if (data["date"] === targetDate) {
