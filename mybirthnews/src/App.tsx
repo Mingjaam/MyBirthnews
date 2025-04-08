@@ -556,6 +556,7 @@ function App() {
 
   return (
     <AppContainer>
+      <Analytics />
       <Header>
         <Title>당신은 기억 못 하는<br/>그 날 이야기</Title>
       </Header>
