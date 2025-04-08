@@ -278,7 +278,7 @@ app.get('/kbs-news', async (req, res) => {
   } catch (err) {
     console.error(`[${currentTime}] ❌ KBS 뉴스 크롤링 에러:`, err);
     
-    // 에러 상세 정보 로깅
+    // 에러 상세 정보 로깅.
     if (err.response) {
       console.error('응답 상태:', err.response.status);
       console.error('응답 헤더:', err.response.headers);
