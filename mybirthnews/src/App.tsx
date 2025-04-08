@@ -354,6 +354,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleSearch = () => {
     if (selectedDate) {
@@ -600,6 +601,7 @@ function App() {
                     그날의 기사
                     <RefreshButton 
                       onClick={() => {
+                        setIsRefreshing(true);
                         // 날짜 파싱
                         const dateObj = new Date(selectedDate);
                         const year = dateObj.getFullYear();
@@ -608,6 +610,7 @@ function App() {
                         if (year < 1987) {
                           setNewsItems([]);
                           setError('1987년 이전의 기사 정보는 제공되지 않습니다.');
+                          setIsRefreshing(false);
                           return;
                         }
                         
@@ -626,6 +629,7 @@ function App() {
                                   link: '' // KBS 뉴스는 링크 없음
                                 }));
                               setNewsItems(randomNews);
+                              setIsRefreshing(false);
                             } else {
                               // KBS 뉴스가 없는 경우 SBS 뉴스 시도
                               axios.get(`https://mybirthnews.onrender.com/sbs-news?date=${selectedDate}`)
@@ -647,11 +651,13 @@ function App() {
                                     setNewsItems([]);
                                     setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
                                   }
+                                  setIsRefreshing(false);
                                 })
                                 .catch(sbsError => {
                                   console.error('SBS 뉴스 가져오기 실패:', sbsError);
                                   setNewsItems([]);
                                   setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+                                  setIsRefreshing(false);
                                 });
                             }
                           })
@@ -678,17 +684,19 @@ function App() {
                                   setNewsItems([]);
                                   setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
                                 }
+                                setIsRefreshing(false);
                               })
                               .catch(sbsError => {
                                 console.error('SBS 뉴스 가져오기 실패:', sbsError);
                                 setNewsItems([]);
                                 setError('해당 날짜의 뉴스 기사를 찾을 수 없습니다.');
+                                setIsRefreshing(false);
                               });
                           });
                       }}
-                      disabled={loading}
+                      disabled={isRefreshing}
                     >
-                      {loading ? <ButtonLoadingSpinner /> : '↻ 다른 기사'}
+                      {isRefreshing ? <ButtonLoadingSpinner /> : '↻ 다른 기사'}
                     </RefreshButton>
                   </CardTitle>
                   {newsItems.map((item, index) => (
