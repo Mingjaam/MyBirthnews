@@ -16,7 +16,7 @@ const AppContainer = styled.div`
   padding: 0 16px;
 
   @media (min-width: 400px) {
-    max-width: 600px;
+    max-width: 500px;
   }
 `;
 
@@ -146,7 +146,7 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
 
 const CardTitle = styled.h3<{ type?: string }>`
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 400;
   color: #000;
   margin: 0;
   text-align: left;
@@ -199,12 +199,12 @@ const BirthdayContent = styled.div`
   justify-content: center;
   height: 100%;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1.5;
   padding-left: 12px;
 
   @media (min-width: 400px) {
-    font-size: 24px;
+    font-size: 22px;
   }
 `;
 
@@ -626,8 +626,7 @@ function App() {
                   {selectedDate && (
                     <BirthdayContent>
                       {formatBirthday(selectedDate).year}년<br/>
-                      {formatBirthday(selectedDate).month} {formatBirthday(selectedDate).day}일<br/>
-                      {formatBirthday(selectedDate).weekday}
+                      {formatBirthday(selectedDate).month} {formatBirthday(selectedDate).day}일 {formatBirthday(selectedDate).weekday}
                     </BirthdayContent>
                   )}
                 </Card>
@@ -707,7 +706,7 @@ function App() {
                 </ShareButton>
               </div>
               <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
-                insta : dev_.min
+                dev_.min
               </InstagramButton>
             </ContactContainer>
           </CardGrid>
