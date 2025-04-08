@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { Analytics } from "@vercel/analytics/react"
 
 // ===== 레이아웃 컴포넌트 =====
 const AppContainer = styled.div`
@@ -275,6 +276,25 @@ const InstagramButton = styled.a`
   }
 `;
 
+const ShareButton = styled.button`
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
 // ===== 인터페이스 =====
 interface NewsItem {
   title: string;
@@ -491,6 +511,26 @@ function App() {
     };
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: '당신은 기억 못 하는 그 날 이야기',
+      text: `${selectedDate}의 기억을 확인해보세요!`,
+      url: 'https://my-birthnews.vercel.app/'
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Web Share API를 지원하지 않는 경우
+        await navigator.clipboard.writeText(shareData.url);
+        alert('링크가 클립보드에 복사되었습니다!');
+      }
+    } catch (err) {
+      console.error('공유하기 실패:', err);
+    }
+  };
+
   return (
     <AppContainer>
       <Header>
@@ -631,6 +671,9 @@ function App() {
                 <InstagramButton href="https://www.instagram.com/dev_.min" target="_blank" rel="noopener noreferrer">
                   insta : dev_.min
                 </InstagramButton>
+                <ShareButton onClick={handleShare}>
+                  링크 공유하기
+                </ShareButton>
               </ContactContainer>
             </InfoText>
           </CardGrid>
