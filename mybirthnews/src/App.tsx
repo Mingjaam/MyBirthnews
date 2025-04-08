@@ -136,11 +136,7 @@ const CardTitle = styled.h3<{ type?: string }>`
 `;
 
 const CardContent = styled.p<{ type?: string; itemCount?: number }>`
-  font-size: ${props => {
-    const baseFontSize = props.type === 'birthday' ? 8 : 8;
-    const itemCount = props.itemCount || 1;
-    return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 12)}px`;
-  }};
+  font-size: 12px;
   color: #000;
   margin-bottom: 4px;
   line-height: 1.3;
@@ -161,14 +157,14 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   background-color: #f0e9d9; // 연한 노란색/갈색 배경 (재생 종이 느낌)
   padding: 8px;
   border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  max-height: 100px;
+  overflow-y: auto;
 
   @media (min-width: 600px) {
-    font-size: ${props => {
-      const baseFontSize = props.type === 'birthday' ? 36 : 18;
-      const itemCount = props.itemCount || 1;
-      return `${Math.max(baseFontSize - (itemCount - 1) * 0.5, 16)}px`;
-    }};
-    padding: 12px;
+    font-size: 12px;
+    padding: 8px;
   }
 `;
 
