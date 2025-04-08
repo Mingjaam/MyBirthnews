@@ -92,33 +92,45 @@ app.get("/weather-type", (req, res) => {
   
     const results = [];
   
-    fs.createReadStream("data/weather_plus.csv")
-      .pipe(csv())
-      .on("data", (data) => {
-        if (data["date"] === targetDate) {
-          const snow = parseFloat(data["snow"] || 0);
-          const rain = parseFloat(data["rain"] || 0);
-          const fog = parseFloat(data["fog"] || 0);
-          const wind = parseFloat(data["wind"] || 0);
-          const sun = parseFloat(data["sun"] || 0);
+    try {
+      fs.createReadStream("data/weather_plus.csv", { encoding: 'utf-8' })
+        .pipe(csv({
+          headers: ['id', 'region', 'date', 'rain', 'wind', 'sun', 'snow', 'fog'],
+          skipLines: 1
+        }))
+        .on("data", (data) => {
+          if (data["date"] === targetDate) {
+            const snow = parseFloat(data["snow"] || 0);
+            const rain = parseFloat(data["rain"] || 0);
+            const fog = parseFloat(data["fog"] || 0);
+            const wind = parseFloat(data["wind"] || 0);
+            const sun = parseFloat(data["sun"] || 0);
 
-          let weatherType = "맑음";
-          if (snow > 0) weatherType = "눈";
-          else if (rain > 0) weatherType = "비";
-          else if (fog >= 0.2) weatherType = "안개";
-          else if (wind >= 4.0) weatherType = "강풍";
-          else if (sun < 2) weatherType = "흐림";
+            let weatherType = "맑음";
+            if (snow > 0) weatherType = "눈";
+            else if (rain > 0) weatherType = "비";
+            else if (fog >= 0.2) weatherType = "안개";
+            else if (wind >= 4.0) weatherType = "강풍";
+            else if (sun < 2) weatherType = "흐림";
 
-          results.push({ weatherType });
-        }
-      })
-      .on("end", () => {
-        if (results.length > 0) {
-          res.json(results[0]);
-        } else {
-          res.status(404).send("날씨 데이터 없음");
-        }
-      });
+            results.push({ weatherType });
+          }
+        })
+        .on("end", () => {
+          if (results.length > 0) {
+            res.json(results[0]);
+          } else {
+            res.status(404).send("날씨 데이터 없음");
+          }
+        })
+        .on("error", (err) => {
+          console.error("CSV 파일 읽기 오류:", err);
+          res.status(500).send("서버 내부 오류");
+        });
+    } catch (err) {
+      console.error("날씨 타입 API 오류:", err);
+      res.status(500).send("서버 내부 오류");
+    }
   });
 
 
