@@ -32,8 +32,10 @@ const MainContent = styled.div`
   align-items: center;
   justify-content: flex-start;
   min-height: calc(100vh - 100px);
-  overflow: auto; // 내부 콘텐츠 스크롤
+  overflow-y: auto;
   padding-top: 40px;
+  padding-bottom: 40px;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const Title = styled.h1`
