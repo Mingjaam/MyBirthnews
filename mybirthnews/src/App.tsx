@@ -562,6 +562,11 @@ function App() {
   return (
     <AppContainer>
       <Analytics />
+      <ins className="kakao_ad_area" style={{display: 'none'}}
+        data-ad-unit="DAN-jqNpVLGrC0neJaXK"
+        data-ad-width="320"
+        data-ad-height="100"></ins>
+      <div dangerouslySetInnerHTML={{ __html: '<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>' }} />
       <Header>
         <Title>당신은 기억 못 하는<br/>그 날 이야기</Title>
       </Header>
