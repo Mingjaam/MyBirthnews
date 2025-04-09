@@ -659,7 +659,7 @@ function App() {
                   {selectedDate && (
                     <BirthdayContent>
                       {formatBirthday(selectedDate).year}년<br/>
-                      {formatBirthday(selectedDate).month}<br/>{formatBirthday(selectedDate).day}일 {formatBirthday(selectedDate).weekday}
+                      {formatBirthday(selectedDate).month}{formatBirthday(selectedDate).day}일<br/>{formatBirthday(selectedDate).weekday}
                     </BirthdayContent>
                   )}
                 </Card>
