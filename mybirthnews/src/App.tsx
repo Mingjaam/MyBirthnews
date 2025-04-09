@@ -196,7 +196,7 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
 const BirthdayContent = styled.div`
   font-size: 22px;
   font-weight: 600;
-  text-align: left;
+  text-align: center;
   margin-top: 0;
   padding-top: 0;
 
