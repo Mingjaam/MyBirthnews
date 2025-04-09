@@ -195,30 +195,13 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
 
 const BirthdayContent = styled.div`
   font-size: 22px;
-  color: #000;
-  margin-bottom: 4px;
-  line-height: 1.3;
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  font-weight: 600;
   text-align: left;
-  flex-direction: column;
-  position: relative;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: #f0e9d9;
-  padding: 8px;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  max-height: 100px;
-  overflow-y: auto;
+  margin-top: 0;
+  padding-top: 0;
 
-  @media (min-width: 600px) {
+  @media (min-width: 400px) {
     font-size: 22px;
-    padding: 8px;
   }
 `;
 
