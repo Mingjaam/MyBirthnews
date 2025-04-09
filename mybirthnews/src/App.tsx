@@ -204,6 +204,7 @@ const BirthdayContent = styled.div`
   line-height: 1.5;
   text-align: left;
   padding-left: 12px;
+  padding-top: 20px;
 
   @media (min-width: 400px) {
     font-size: 22px;
