@@ -132,7 +132,7 @@ const Card = styled.div<{ clickable?: boolean; type?: string }>`
     // 빌보드 타입의 경우 flex 값을 1 1 50%로 설정합니다.
     if (props.type === 'billboard') return '1 1 50%';
     // 기본적으로는 flex 값을 1 1 50%로 설정합니다.
-    return '1 1 50%';
+    return '1 1 100%';
   }};
   // 카드의 높이를 설정합니다. 카드의 타입에 따라 높이 값이 다릅니다.
   height: ${props => {
@@ -194,14 +194,14 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
 `;
 
 const BirthdayContent = styled.div`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   text-align: center;
-  margin-top: 0;
+  margin-top: 10px;
   padding-top: 0;
 
   @media (min-width: 400px) {
-    font-size: 20px;
+    font-size: 25px;
   }
 `;
 
