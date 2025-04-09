@@ -176,14 +176,10 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
   text-align: left;
   flex-direction: column;
   position: relative;
-  white-space: normal;
-  word-break: keep-all;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  background-color: #f0e9d9; // 연한 노란색/갈색 배경 (재생 종이 느낌)
+  background-color: #f0e9d9;
   padding: 8px;
   border-radius: 8px;
   width: 100%;
