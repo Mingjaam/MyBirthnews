@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -394,6 +394,33 @@ const SearchButton = styled.button`
   }
 `;
 
+const KakaoAd = () => {
+  useEffect(() => {
+    const adContainer = document.getElementById("kakaoAdArea");
+
+    // 광고 태그 생성
+    const ins = document.createElement("ins");
+    ins.className = "kakao_ad_area";
+    ins.style.display = "none";
+    ins.setAttribute("data-ad-unit", "DAN-jqNpVLGrC0neJaXK");
+    ins.setAttribute("data-ad-width", "320");
+    ins.setAttribute("data-ad-height", "100");
+
+    // 스크립트 생성
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.src = "//t1.daumcdn.net/kas/static/ba.min.js";
+
+    if (adContainer) {
+      adContainer.appendChild(ins);
+      adContainer.appendChild(script);
+    }
+  }, []);
+
+  return <div id="kakaoAdArea" />;
+};
+
 function App() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -562,11 +589,7 @@ function App() {
   return (
     <AppContainer>
       <Analytics />
-      <ins className="kakao_ad_area" style={{display: 'none'}}
-        data-ad-unit="DAN-jqNpVLGrC0neJaXK"
-        data-ad-width="320"
-        data-ad-height="100"></ins>
-      <div dangerouslySetInnerHTML={{ __html: '<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>' }} />
+      <KakaoAd />
       <Header>
         <Title>당신은 기억 못 하는<br/>그 날 이야기</Title>
       </Header>
