@@ -12,7 +12,7 @@ const AppContainer = styled.div`
   font-family: 'GowunDodum', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color:rgb(254, 243, 215); // 연한 노란색/갈색 배경 (재생 종이 느낌)
   height: 100vh;
-  overflow: auto;
+  overflow: hidden; // 스크롤 바 숨기기
   padding: 0 16px;
 
   @media (min-width: 400px) {
@@ -32,6 +32,7 @@ const MainContent = styled.div`
   align-items: center;
   justify-content: flex-start;
   min-height: calc(100vh - 100px);
+  overflow: auto; // 내부 콘텐츠 스크롤
   padding-top: 40px;
 `;
 
