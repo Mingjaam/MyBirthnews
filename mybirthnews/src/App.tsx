@@ -194,14 +194,14 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
 `;
 
 const BirthdayContent = styled.div`
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   text-align: center;
   margin-top: 0;
   padding-top: 0;
 
   @media (min-width: 400px) {
-    font-size: 22px;
+    font-size: 20px;
   }
 `;
 
