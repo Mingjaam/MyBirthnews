@@ -196,13 +196,14 @@ const CardContent = styled.p<{ type?: string; itemCount?: number }>`
 const BirthdayContent = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   height: 100%;
   font-weight: 700;
   font-size: 22px;
   line-height: 1.5;
-  text-align: center;
+  text-align: left;
+  padding-left: 12px;
 
   @media (min-width: 400px) {
     font-size: 22px;
