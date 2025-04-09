@@ -11,8 +11,8 @@ const AppContainer = styled.div`
   margin: 0 auto;
   font-family: 'GowunDodum', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color:rgb(254, 243, 215); // 연한 노란색/갈색 배경 (재생 종이 느낌)
-  height: 100vh;
-  overflow: hidden; // 스크롤 바 숨기기
+  min-height: 100vh;
+  position: relative;
   padding: 0 16px;
 
   @media (min-width: 400px) {
@@ -36,6 +36,8 @@ const MainContent = styled.div`
   padding-top: 40px;
   padding-bottom: 40px;
   -webkit-overflow-scrolling: touch;
+  height: 100%;
+  position: relative;
 `;
 
 const Title = styled.h1`
